@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The Express/SQLite API (server.ts) does not run on static hosting,
+# so API calls get a JSON error instead of the SPA's index.html.
+[[redirects]]
+  from = "/api/*"
+  to = "/api-offline.json"
+  status = 503
+
+# Single-page app fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
