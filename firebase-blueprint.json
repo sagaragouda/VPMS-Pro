@@ -1,0 +1,181 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile registered via Firebase Auth",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Firebase Auth UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "maxLength": 150
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number",
+          "maxLength": 30
+        },
+        "vehicleNumber": {
+          "type": "string",
+          "description": "Registered vehicle license plate number",
+          "maxLength": 30
+        },
+        "role": {
+          "type": "string",
+          "description": "Application access role",
+          "enum": ["USER", "ADMIN"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Account creation ISO string"
+        }
+      },
+      "required": ["id", "name", "email", "createdAt"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Parking slot booking transaction and digital pass",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique booking identifier"
+        },
+        "ticketNumber": {
+          "type": "string",
+          "description": "Formatted ticket number (e.g. TKT-1001)",
+          "maxLength": 30
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the user who booked the slot"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "Email address of the user who booked",
+          "maxLength": 150
+        },
+        "userName": {
+          "type": "string",
+          "description": "Display name of the booking driver",
+          "maxLength": 100
+        },
+        "registrationNumber": {
+          "type": "string",
+          "description": "Vehicle registration / license plate number",
+          "maxLength": 30
+        },
+        "vehicleType": {
+          "type": "string",
+          "description": "Category of vehicle",
+          "enum": ["CAR", "BIKE", "COMMERCIAL"]
+        },
+        "slotId": {
+          "type": "string",
+          "description": "Parking slot internal ID"
+        },
+        "slotNumber": {
+          "type": "string",
+          "description": "Parking bay designation code (e.g. A-101)",
+          "maxLength": 20
+        },
+        "floor": {
+          "type": "number",
+          "description": "Floor level"
+        },
+        "entryTime": {
+          "type": "string",
+          "description": "Entry / booking start time ISO string"
+        },
+        "exitTime": {
+          "type": "string",
+          "description": "Exit time ISO string if completed"
+        },
+        "status": {
+          "type": "string",
+          "description": "Booking lifecycle state",
+          "enum": ["ACTIVE", "COMPLETED", "CANCELLED"]
+        },
+        "fee": {
+          "type": "number",
+          "description": "Total parking fee charged"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp ISO string"
+        }
+      },
+      "required": ["id", "userId", "registrationNumber", "vehicleType", "slotNumber", "entryTime", "status"]
+    },
+    "BlacklistedVehicle": {
+      "title": "BlacklistedVehicle",
+      "description": "Vehicle prohibited from entering or booking slots due to rule violations",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Cleaned plate number used as document ID"
+        },
+        "registrationNumber": {
+          "type": "string",
+          "description": "Original formatted plate number",
+          "maxLength": 30
+        },
+        "violationType": {
+          "type": "string",
+          "description": "Category of rule violation",
+          "enum": ["OVERSTAY", "UNAUTHORIZED_PARKING", "SPEEDING_RECKLESS", "UNPAID_EXIT", "IMPROPER_OBSTRUCTION", "OTHER"]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Specific reason for blacklisting",
+          "maxLength": 255
+        },
+        "blacklistedAt": {
+          "type": "string",
+          "description": "Timestamp when added to blacklist"
+        },
+        "blacklistedBy": {
+          "type": "string",
+          "description": "Admin email who instituted the blacklist",
+          "maxLength": 150
+        },
+        "status": {
+          "type": "string",
+          "description": "Blacklist enforcement state",
+          "enum": ["ACTIVE", "REVOKED"]
+        }
+      },
+      "required": ["id", "registrationNumber", "violationType", "reason", "blacklistedAt", "blacklistedBy", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores user profiles with access restricted to the authenticated owner and admin"
+    },
+    "/bookings/{bookingId}": {
+      "schema": {
+        "$ref": "#/entities/Booking"
+      },
+      "description": "Stores parking slot bookings with creation restricted to authenticated users for their own UID"
+    },
+    "/blacklist/{plateNumber}": {
+      "schema": {
+        "$ref": "#/entities/BlacklistedVehicle"
+      },
+      "description": "Stores blacklisted vehicles readable for entry checks and manageable exclusively by admins"
+    }
+  }
+}

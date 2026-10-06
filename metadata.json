@@ -1,0 +1,6 @@
+{
+  "name": "VPMS Pro - Vehicle Parking Management System",
+  "description": "Cyberpunk Command Center parking management system with real-time floor slot tracking, automated ticket generation, exit checkout, and comprehensive analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
