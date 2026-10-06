@@ -128,3 +128,9 @@ export interface BlacklistedVehicle {
   notes?: string;
 }
 
+
+export interface BackendConfig {
+  mode: 'connected' | 'standalone';
+  apiBaseUrl: string;
+  autoSync: boolean;
+}
